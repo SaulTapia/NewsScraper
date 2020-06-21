@@ -16,15 +16,15 @@ def main(filename):
     df = _read_data(filename)
     newspaper_uid = _extract_newspaper_uid(filename)
     df = _add_newspaper_uid_column(df, newspaper_uid)
-    df = _remove_slash_from_end_of_url(df)
-    df = _extract_host(df)
     df = _fill_missing_titles(df)
+    df = _remove_slash_from_end_of_url(df)
+    df = _drop_rows_with_missing_values(df)
+    df = _extract_host(df)
     df = _generate_uids_for_rows(df)
     df = _remove_new_lines_from_body(df)
     df = _tokenize_column(df, 'title')
     df = _tokenize_column(df, 'body')
     df = _remove_duplicate_entries(df, 'title')
-    df = _drop_rows_with_missing_values(df)
 
     _save_data(df, filename)
     return df
@@ -131,7 +131,6 @@ def _remove_slash_from_end_of_url(df):
         fixed_links.append(link)
 
     df['url'] = fixed_links
-    print(fixed_links)
     return df
 
 
