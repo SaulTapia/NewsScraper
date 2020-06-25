@@ -6,3 +6,13 @@ Run the pipeline file, it'll scrape the websites and save it in .db format in th
 
 * El universal
 * El pais
+
+## Libraries needed:
+
+* Pandas
+* hashlib
+* nltk
+* sqlalchemy
+* requests
+* lxml
+* pyyaml
