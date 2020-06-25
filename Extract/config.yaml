@@ -18,9 +18,9 @@ news_sites:
   cnn: 
     url: https://cnnespanol.cnn.com/
     queries:
-      XPATH_HOMEPAGE_LINKS_TO_ARTICLES:
-      XPATH_TITLE:
-      XPATH_BODY:
-      XPATH_DATE:
-      XPATH_AUTHOR:
+      XPATH_HOMEPAGE_LINKS_TO_ARTICLES: //*[@class="news__title"]/a/@href
+      XPATH_TITLE: //h1[@class="storyfull__title"]/text()
+      XPATH_BODY: //div[@class="storyfull__body"]/p//text()
+      XPATH_DATE: //time[@class="storyfull__time"]/text()
+      XPATH_AUTHOR: //p[@class="storyfull__authors"]/a[1]/text()
 

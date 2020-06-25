@@ -31,9 +31,8 @@ def _news_scraper(news_site_uid):
             good_links = _fix_links(links_to_news, host)
 
             
-            for link in good_links:
+            for i, link in enumerate(good_links):
                 try:
-                    logger.info(f'Scraping new article...')
                     article_response = requests.get(link, timeout=6)
                     article = article_response.content.decode('utf-8')
                     article_parsed = html.fromstring(article)
@@ -76,6 +75,7 @@ def _news_scraper(news_site_uid):
                     article_elements['url'] = link
                     final_articles.append(article_elements)
 
+                    logger.info(f'Article {i} scraped!')
                 except Exception as e:
                     print(e)
 

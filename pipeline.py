@@ -4,7 +4,7 @@ import subprocess
 import datetime
 
 logger = logging.getLogger(__name__)
-news_sites_uids = ['eluniversal', 'elpais']
+news_sites_uids = ['eluniversal', 'elpais', 'cnn']
 
 def main():
     _extract()
