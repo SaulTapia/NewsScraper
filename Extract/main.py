@@ -1,77 +1,119 @@
 import argparse
 import logging
 import re
+import requests
 import datetime
 import csv
-import urllib3
+import pandas as pd
+import lxml.html as html
 logging.basicConfig(level=logging.INFO)
-
-from requests.exceptions import HTTPError
-from urllib3.exceptions import MaxRetryError
-
-import news_page_objects as news
 from common import config
 
 logger = logging.getLogger(__name__)
-is_well_formed_link = re.compile(r'^https?://.+/.+$')
 is_root_path = re.compile(r'^/.+$')
 
 
 def _news_scraper(news_site_uid):
-    host = config()['news_sites'][news_site_uid]['url']
-
+    paths = config()['news_sites'][news_site_uid]
+    host = paths['url']
     logging.info(f'Beginning scraper for {host}')
-    homepage = news.HomePage(news_site_uid, host)
-    counter = 0
-    articles = []
-    for link in homepage.article_links:
-        article = _fetch_article(news_site_uid, host, link)
 
-        if article:
-            logger.info('Article fetched!')
-            articles.append(article)
-            counter += 1
-            if counter == 50:
-                break
-
-
-    _save_articles(news_site_uid, articles)
-
-        
-def _fetch_article(news_site_uid, host, link):
-    logger.info(f'Start fetching article at {link}')
-
-    article = None
     try:
-        article = news.ArticlePage(news_site_uid, _build_link(host, link))
-    except (HTTPError, MaxRetryError):
-        logger.warning('Error while fetching article ', exc_info=False)
+        response = requests.get(paths['url'])
+        if response.status_code == 200:
+            logger.info(f'Parsing url...')
+            final_articles = []
 
-    return article
+            home = response.content.decode('utf-8')
+            parsed = html.fromstring(home)
+            links_to_news = parsed.xpath(paths['queries']['XPATH_HOMEPAGE_LINKS_TO_ARTICLES'])
 
-def _build_link(host, link):
-    if is_well_formed_link.match(link):
-        return link
-    elif is_root_path.match(link):
-        return f'{host}{link}'
-    else:
-        return f'{host}/{link}'
+            good_links = _fix_links(links_to_news, host)
+
+            
+            for link in good_links:
+                try:
+                    logger.info(f'Scraping new article...')
+                    article_response = requests.get(link, timeout=6)
+                    article = article_response.content.decode('utf-8')
+                    article_parsed = html.fromstring(article)
+                    article_elements = {}
+
+                    title = article_parsed.xpath(paths['queries']['XPATH_TITLE'])
+                    if len(title):
+                        article_elements['title'] = title[0]
+                    else:
+                        article_elements['title'] = None
+
+                    body = article_parsed.xpath(paths['queries']['XPATH_BODY'])  
+                    p_elements = []
+                    for text in body:
+                        if str(text)[0] in [',', '.', ' ']:
+                            p_elements.append(str(text))
+                        else:
+                            p_elements.append(' ' + str(text))
 
 
-def _save_articles(news_site_uid, articles):
+                    body = ''.join(p_elements)
+                    if len(body):
+                        article_elements['body'] = body
+                    else:
+                        article_elements['body'] = None
+
+
+                    date = article_parsed.xpath(paths['queries']['XPATH_DATE'])
+                    if len(date):
+                        article_elements['date'] = date[0]
+                    else:
+                        article_elements['date'] = None
+
+                    author = article_parsed.xpath(paths['queries']['XPATH_AUTHOR'])
+                    if len(author):
+                        article_elements['author'] = author[0]
+                    else:
+                        article_elements['author'] = None
+
+                    article_elements['url'] = link
+                    final_articles.append(article_elements)
+
+                except Exception as e:
+                    print(e)
+
+
+            return final_articles
+
+        else:
+            print(f'Error. Status code {response.status_code}')
+
+
+    except ValueError as ve:
+        print(ve)
+
+def _fix_links(links_to_news, host):
+    logger.info('Fixing links')
+    fixed_links_aux = []
+    for link in links_to_news:
+        if link[0] == '/':
+            fixed_links_aux.append(host + link)
+        else:
+            fixed_links_aux.append(link)
+    fixed_links = []
+    for link in fixed_links_aux:
+        if link[-1] == '/':
+            fixed_links.append(link[:-1])
+        else:
+            fixed_links.append(link)
+
+    return fixed_links
+            
+    
+def _save_articles(data, news_site_uid):
+    print('Saving data...')
+    
     now = datetime.datetime.now().strftime('%Y_%m_%d')
     out_file_name = f'{news_site_uid}_{now}_articles.csv'
-    csv_headers = list(filter(lambda property: not property.startswith('_'), dir(articles[0])))
-
-
-    with open(out_file_name, mode='w+') as f:
-        writer = csv.writer(f)
-        writer.writerow(csv_headers)
-
-        for article in articles:
-            print('Scraping new article')
-            row = [str(getattr(article, prop))for prop in csv_headers]
-            writer.writerow(row)
+    df = pd.DataFrame(data)
+    df.to_csv(out_file_name, index = False)
 
 
 if __name__ == "__main__":
@@ -84,4 +126,5 @@ if __name__ == "__main__":
                         choices=news_site_choices)
 
     args = parser.parse_args()
-    _news_scraper(args.news_site)
+    articles = _news_scraper(args.news_site)
+    _save_articles(articles, args.news_site)

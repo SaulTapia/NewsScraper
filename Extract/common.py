@@ -1,8 +1,6 @@
 import yaml
 
-
 __config = None
-
 
 def config():
     global __config

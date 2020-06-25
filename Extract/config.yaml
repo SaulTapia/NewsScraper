@@ -1,20 +1,26 @@
 news_sites:
   eluniversal:
-    url: http://www.eluniversal.com.mx
+    url: https://www.eluniversal.com.mx
     queries:
-      homepage_article_links: '.field-content a'
-      article_body: '.field-name-body'
-      article_title: '.pane-content h1'
+      XPATH_HOMEPAGE_LINKS_TO_ARTICLES: /html/body//div/*[@class="field-content" and (self::h1 or self::h2 or self::h3)]/a/@href
+      XPATH_TITLE: /html/body//div[@class="pane-content"]/h1/text()
+      XPATH_BODY: /html/body//div[@class="pane-content"]/div/p//text()
+      XPATH_DATE: /html/body//div[@class="fechap"]/text()
+      XPATH_AUTHOR: /html/body//div[contains(@class, "field-name-title")]//text()
   elpais:
     url: https://elpais.com
     queries:
-      homepage_article_links: '.headline a'
-      article_body: '.article_body'
-      article_title: 'article_header h1'
+      XPATH_HOMEPAGE_LINKS_TO_ARTICLES: //*[contains(concat(" ", @class, " "), " headline ")]//a/@href
+      XPATH_TITLE: //div[@id="article_header"]/h1/text()
+      XPATH_BODY: //div[contains(concat(" ", @class, " "), " article_body ")]/p//text()
+      XPATH_DATE: //a[@class="a_ti"]/text()[1]
+      XPATH_AUTHOR: //a[contains(concat(" ", @class, " "), " a_aut_n ")]/text()
   cnn: 
     url: https://cnnespanol.cnn.com/
     queries:
-      homepage_article_links: '.news__title a'
-      article_body: '.storyfull__body'
-      article_title: '.storyfull__title'
+      XPATH_HOMEPAGE_LINKS_TO_ARTICLES:
+      XPATH_TITLE:
+      XPATH_BODY:
+      XPATH_DATE:
+      XPATH_AUTHOR:
 
