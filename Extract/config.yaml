@@ -2,11 +2,11 @@ news_sites:
   eluniversal:
     url: https://www.eluniversal.com.mx
     queries:
-      XPATH_HOMEPAGE_LINKS_TO_ARTICLES: /html/body//div/*[@class="field-content" and (self::h1 or self::h2 or self::h3)]/a/@href
-      XPATH_TITLE: /html/body//div[@class="pane-content"]/h1/text()
-      XPATH_BODY: /html/body//div[@class="pane-content"]/div/p//text()
-      XPATH_DATE: /html/body//div[@class="fechap"]/text()
-      XPATH_AUTHOR: /html/body//div[contains(@class, "field-name-title")]//text()
+      XPATH_HOMEPAGE_LINKS_TO_ARTICLES: //div/*[@class="field-content" and (self::h1 or self::h2 or self::h3)]/a/@href
+      XPATH_TITLE: //div[@class="pane-content"]/h1/text()
+      XPATH_BODY: //div[@class="pane-content"]/div/p//text()
+      XPATH_DATE: //div[@class="fechap"]/text()
+      XPATH_AUTHOR: //div[contains(@class, "field-name-title")]//text()
   elpais:
     url: https://elpais.com
     queries:
@@ -23,4 +23,14 @@ news_sites:
       XPATH_BODY: //div[@class="storyfull__body"]/p//text()
       XPATH_DATE: //time[@class="storyfull__time"]/text()
       XPATH_AUTHOR: //p[@class="storyfull__authors"]/a[1]/text()
+  pagina12:
+    url: https://www.pagina12.com.ar/
+    queries:
+      XPATH_HOMEPAGE_LINKS_TO_ARTICLES: '//div[@class="headline-content"]//a[not(@class)]/@href'
+      XPATH_TITLE: '//h1[@class="article-title"]/text()'
+      XPATH_SUMMARY: '//div[@class="article-summary"]/text()'
+      XPATH_BODY: '//div[@class="article-text"]/p//text()'
+      XPATH_PREFIX: '//h2[@class="article-prefix"]/text()'
+      XPATH_DATE: '//span[@pubdate="pubdate"]/text()'
+      XPATH_AUTHOR: '//div[@class="article-main-media-header"]/div[@class="article-author"]/span/a/text()'
 
