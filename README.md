@@ -1,7 +1,7 @@
 # NewsScraper
 Scraper for news sites made in spanish.
 
-Run the pipeline file, it'll scrape the websites and save it in .db format in the databases folder.
+When pipeline.py is run, it saves a .db file for each website in the Databases folder.
 
 ## Currently supports:
 
