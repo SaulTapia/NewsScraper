@@ -75,7 +75,7 @@ def _news_scraper(news_site_uid):
                     article_elements['url'] = link
                     final_articles.append(article_elements)
 
-                    logger.info(f'Article {i} of {len(good_links)} scraped!')
+                    logger.info(f'Article {i+1}/{len(good_links)} scraped!')
                 except Exception as e:
                     print(e)
 
