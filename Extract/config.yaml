@@ -28,9 +28,14 @@ news_sites:
     queries:
       XPATH_HOMEPAGE_LINKS_TO_ARTICLES: '//div[@class="headline-content"]//a[not(@class)]/@href'
       XPATH_TITLE: '//h1[@class="article-title"]/text()'
-      XPATH_SUMMARY: '//div[@class="article-summary"]/text()'
       XPATH_BODY: '//div[@class="article-text"]/p//text()'
-      XPATH_PREFIX: '//h2[@class="article-prefix"]/text()'
       XPATH_DATE: '//span[@pubdate="pubdate"]/text()'
       XPATH_AUTHOR: '//div[@class="article-main-media-header"]/div[@class="article-author"]/span/a/text()'
-
+  milenio:
+    url: https://www.milenio.com/
+    queries:
+      XPATH_HOMEPAGE_LINKS_TO_ARTICLES: //div[@class="title"]/a/@href
+      XPATH_TITLE: //h1[@class="title"]/text()
+      XPATH_BODY: //div[@id="content-body"]/p//text()
+      XPATH_DATE: //time/@datetime
+      XPATH_AUTHOR: //span[@class="author"]/text()
