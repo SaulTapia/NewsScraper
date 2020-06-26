@@ -9,6 +9,7 @@ When pipeline.py is run, it saves a .db file for each website in the Databases f
 * El pais
 * Cnnespanol
 * Pagina12
+* Milenio
 
 ## Libraries needed:
 
