@@ -1,7 +1,7 @@
 # NewsScraper
 Scraper for news sites made in spanish.
 
-When pipeline.py is run, it saves a .db file for each website in the Databases folder.
+When pipeline.py is run, it'll create a .db file for each website and save it in the Databases folder.
 
 ## Currently supports:
 
@@ -9,6 +9,7 @@ When pipeline.py is run, it saves a .db file for each website in the Databases f
 * El pais
 * Cnnespanol
 * Pagina12
+* Milenio
 
 ## Libraries needed:
 
