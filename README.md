@@ -8,6 +8,7 @@ Run the pipeline file, it'll scrape the websites and save it in .db format in th
 * El universal
 * El pais
 * Cnnespanol
+* Pagina12
 
 ## Libraries needed:
 
